@@ -6,7 +6,7 @@ export default {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>道家日历-传统节日增强版</title>
+    <title>道家日历-壹贰新知公众号设计</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -14,8 +14,8 @@ export default {
             --bg-color: #f4f4f7;
             --highlight-color: #d9534f;
             --wu-color: #f0ad4e;
-            --trad-color: #c2185b; /* 传统节日颜色(红紫) */
-            --jieqi-color: #2e7d32; /* 节气颜色(深绿) */
+            --trad-color: #c2185b;
+            --jieqi-color: #2e7d32;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
@@ -26,7 +26,6 @@ export default {
             overflow: hidden;
         }
 
-        /* 主容器：手机端上下，PC端左右 */
         .app-container {
             display: flex;
             flex-direction: column;
@@ -52,6 +51,30 @@ export default {
         .header button {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
             color: white; padding: 6px 12px; border-radius: 4px; font-size: 0.85rem; cursor: pointer;
+            white-space: nowrap;
+        }
+        
+        /* 新增：日期选择器样式 */
+        .date-picker {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            font-family: inherit;
+            text-align: center;
+            cursor: pointer;
+            outline: none;
+            /* 修正iOS默认样式 */
+            -webkit-appearance: none; 
+            appearance: none;
+        }
+        /* 针对不同浏览器的Input图标颜色适配 */
+        .date-picker::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
         }
 
         .week-header {
@@ -66,37 +89,29 @@ export default {
         }
         .day-cell {
             border-bottom: 1px solid #f5f5f5; border-right: 1px solid #f5f5f5;
-            height: 70px; /* 稍微调高以容纳更多标签 */
+            height: 68px;
             padding: 2px; display: flex; flex-direction: column; align-items: center; cursor: pointer;
         }
         .day-cell.other-month { opacity: 0.2; }
         .day-cell.selected { background-color: #fffde7 !important; outline: 2px solid var(--primary-color); z-index: 5; }
         .day-cell.today { background-color: #e3f2fd; }
         
-        .solar-text { font-size: 1rem; font-weight: bold; line-height: 1.2; }
-        .lunar-text { font-size: 0.65rem; color: #777; transform: scale(0.9); line-height: 1.2; }
+        .solar-text { font-size: 1rem; font-weight: bold; }
+        .lunar-text { font-size: 0.65rem; color: #777; transform: scale(0.9); }
         
-        /* 徽章容器 */
-        .badge-container { 
-            display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start;
-            width: 100%; height: 28px; margin-top: 2px; overflow: hidden; 
-        }
+        .badge-container { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; height: 16px; margin-top: 2px; overflow: hidden; }
         .badge {
             font-size: 9px; padding: 0 2px; border-radius: 2px; color: white;
-            margin: 0.5px 1px; transform: scale(0.85); white-space: nowrap; line-height: 1.3;
+            margin: 0 1px; transform: scale(0.85); white-space: nowrap; line-height: 1.3;
         }
         .badge.ming-wu { background-color: var(--highlight-color); }
         .badge.an-wu { background-color: var(--wu-color); }
-        .badge.festival { background-color: #17a2b8; } /* 道历节日 */
-        .badge.trad { background-color: var(--trad-color); } /* 传统节日 */
-        .badge.jieqi { background-color: var(--jieqi-color); } /* 节气 */
+        .badge.festival { background-color: #17a2b8; }
+        .badge.trad { background-color: var(--trad-color); }
+        .badge.jieqi { background-color: var(--jieqi-color); }
 
-        /* 详情区：自动填充剩余空间并允许滚动 */
         .detail-section {
-            flex-grow: 1;
-            overflow-y: auto;
-            background-color: #fff;
-            padding: 15px;
+            flex-grow: 1; overflow-y: auto; background-color: #fff; padding: 15px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -105,7 +120,7 @@ export default {
             border-left: 5px solid var(--primary-color); padding-left: 12px; margin-bottom: 15px;
         }
 
-        .detail-info-row { margin-bottom: 6px; font-size: 0.95rem; color: #333; line-height: 1.6; }
+        .detail-info-row { margin-bottom: 6px; font-size: 0.95rem; color: #333; line-height: 1.5; }
         .detail-label { font-weight: bold; color: #555; }
 
         .yi-ji-box { display: flex; gap: 10px; margin: 15px 0; }
@@ -118,23 +133,13 @@ export default {
         .sc-table td { padding: 10px; border-bottom: 1px solid #f0f0f0; font-size: 0.85rem; }
         .current-shichen { background-color: #fff9c4 !important; font-weight: bold; border-left: 4px solid var(--wu-color); }
 
-        /* PC端布局适配 */
         @media (min-width: 1024px) {
             .app-container {
-                flex-direction: row; /* 改为并排显示 */
-                height: 90vh;
-                margin: 5vh auto;
-                border-radius: 12px;
-                overflow: hidden;
-                box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+                flex-direction: row; height: 90vh; margin: 5vh auto;
+                border-radius: 12px; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.1);
             }
-            .calendar-section {
-                width: 450px; /* PC端日历宽度固定 */
-                border-right: 1px solid #eee;
-                border-bottom: none;
-            }
-            .day-cell { height: 85px; } /* PC端日历高一点 */
-            .badge-container { height: 32px; }
+            .calendar-section { width: 450px; border-right: 1px solid #eee; border-bottom: none; }
+            .day-cell { height: 80px; }
             .detail-section { padding: 30px; }
         }
         .safe-area { height: 40px; }
@@ -145,7 +150,7 @@ export default {
         <div class="calendar-section">
             <div class="header">
                 <button onclick="changeMonth(-1)">上月</button>
-                <span id="currentDateDisplay">加载中...</span>
+                <input type="month" id="datePicker" class="date-picker">
                 <button onclick="changeMonth(1)">下月</button>
             </div>
             <div class="week-header">
@@ -171,9 +176,21 @@ export default {
                     document.getElementById('detailContent').innerHTML = "<b>日历核心库加载失败</b>，请检查网络或刷新页面。";
                     return;
                 }
+                
+                // 初始化监听日期选择器
+                const picker = document.getElementById('datePicker');
+                picker.addEventListener('change', function(e) {
+                    if(this.value) {
+                        const parts = this.value.split('-');
+                        currentYear = parseInt(parts[0]);
+                        currentMonth = parseInt(parts[1]);
+                        renderCalendar(currentYear, currentMonth);
+                    }
+                });
+
                 renderCalendar(currentYear, currentMonth);
                 showDetails(selectedDate);
-                // 自动刷新时辰高亮
+                
                 setInterval(() => {
                     if(selectedDate.toDateString() === new Date().toDateString()) showDetails(selectedDate);
                 }, 30000);
@@ -190,7 +207,10 @@ export default {
         }
 
         function renderCalendar(year, month) {
-            document.getElementById('currentDateDisplay').textContent = year + "年" + month + "月";
+            // 同步更新选择器显示
+            const mStr = month < 10 ? '0' + month : month;
+            document.getElementById('datePicker').value = year + '-' + mStr;
+
             const grid = document.getElementById('calendarGrid');
             grid.innerHTML = '';
             const firstDay = new Date(year, month - 1, 1);
@@ -209,40 +229,27 @@ export default {
                 if (d.toDateString() === new Date().toDateString()) cell.classList.add('today');
                 if (d.toDateString() === selectedDate.toDateString()) cell.classList.add('selected');
 
-                // 获取各类数据
-                const tradFestivals = lunar.getFestivals(); // 传统节日
-                const jieQi = lunar.getJieQi(); // 节气
-                const taoFestivals = tao.getFestivals(); // 道历节日
+                const tradFestivals = lunar.getFestivals();
+                const jieQi = lunar.getJieQi();
+                const taoFestivals = tao.getFestivals();
 
                 let html = '<span class="solar-text">' + d.getDate() + '</span>';
                 
-                // 优先显示节气，没有节气显示农历日
                 let bottomText = lunar.getDayInChinese();
-                let bottomStyle = '';
-                
-                if(jieQi) {
-                    bottomText = jieQi;
-                    bottomStyle = 'color:var(--jieqi-color);font-weight:bold;';
-                }
-                
-                html += '<span class="lunar-text" style="' + bottomStyle + '">' + bottomText + '</span>';
+                if(jieQi) bottomText = jieQi;
+                html += '<span class="lunar-text" style="' + (jieQi ? 'color:var(--jieqi-color);font-weight:bold' : '') + '">' + bottomText + '</span>';
                 
                 html += '<div class="badge-container">';
                 
-                // 1. 优先显示传统节日 (春节、中秋等) - 红色
                 tradFestivals.forEach(f => {
                      html += '<div class="badge trad">' + f.substring(0,3) + '</div>';
                 });
-                
-                // 2. 显示戊日 - 黄色/橙色
+
                 if (tao.isDayMingWu()) html += '<div class="badge ming-wu">明戊</div>';
                 if (tao.isDayAnWu()) html += '<div class="badge an-wu">暗戊</div>';
                 
-                // 3. 显示道历节日 - 蓝色 (截取前3个字以防换行过多)
                 if (taoFestivals.length > 0) {
-                     // 简单去重逻辑，防止同一天多个类似节日撑爆
-                     let fName = taoFestivals[0].getName();
-                     html += '<div class="badge festival">' + fName.substring(0,3) + '</div>';
+                     html += '<div class="badge festival">' + taoFestivals[0].getName().substring(0,3) + '</div>';
                 }
                 
                 html += '</div>';
@@ -257,9 +264,7 @@ export default {
             }
         }
 
-        // 核心修复：手动计算时辰的时间段
         function getShichenTimeRange(zhiIndex) {
-            // zhiIndex: 0为子, 1为丑... 11为亥
             let start = (zhiIndex * 2 + 23) % 24;
             let end = (start + 2) % 24;
             return (start < 10 ? '0' + start : start) + ':00 - ' + (end < 10 ? '0' + end : end) + ':00';
@@ -276,37 +281,20 @@ export default {
                 const isA = tao.isDayAnWu();
                 let wuStatus = isM || isA ? "<b style='color:var(--highlight-color)'>⚠️ " + (isM && isA ? "双戊重合" : (isM ? "明戊" : "暗戊")) + "日 (忌诵经)</b>" : "<span style='color:green'>非戊日 (可诵经)</span>";
 
-                // --- 聚合所有节日信息 Start ---
                 let festivalHtml = '';
-                
-                // 1. 传统节日
                 const tradFest = lunar.getFestivals();
-                if(tradFest.length > 0) {
-                    festivalHtml += '<span style="color:var(--trad-color); font-weight:bold; margin-right:8px; border:1px solid var(--trad-color); padding:0 4px; border-radius:3px; font-size:0.85rem;">' + tradFest.join(' ') + '</span>';
-                }
-                
-                // 2. 节气
+                if(tradFest.length > 0) festivalHtml += '<span style="color:var(--trad-color); font-weight:bold; margin-right:8px;">' + tradFest.join(' ') + '</span>';
                 const jieQi = lunar.getJieQi();
-                if(jieQi) {
-                     festivalHtml += '<span style="color:var(--jieqi-color); font-weight:bold; margin-right:8px; border:1px solid var(--jieqi-color); padding:0 4px; border-radius:3px; font-size:0.85rem;">' + jieQi + '</span>';
-                }
-                
-                // 3. 道历节日
-                const taoFest = tao.getFestivals().map(f => f.getName()).join('，');
-                if(taoFest) {
-                     festivalHtml += '<span style="color:#17a2b8;">' + taoFest + '</span>';
-                }
-
-                if(festivalHtml === '') festivalHtml = '<span style="color:#999">今日无特殊节日</span>';
-                // --- 聚合所有节日信息 End ---
+                if(jieQi) festivalHtml += '<span style="color:var(--jieqi-color); font-weight:bold; margin-right:8px;">' + jieQi + '</span>';
+                const taoFest = tao.getFestivals().map(f => f.getName()).join(' ');
+                if(taoFest) festivalHtml += '<span style="color:#17a2b8;">' + taoFest + '</span>';
+                if(festivalHtml === '') festivalHtml = '无特殊节日';
 
                 let html = '<div class="detail-info-row"><span class="detail-label">干支：</span>' + lunar.getYearInGanZhi() + '年 ' + lunar.getMonthInGanZhi() + '月 ' + lunar.getDayInGanZhi() + '日</div>';
                 html += '<div class="detail-info-row"><span class="detail-label">农历：</span>' + lunar.getMonthInChinese() + '月' + lunar.getDayInChinese() + '</div>';
                 html += '<div class="detail-info-row"><span class="detail-label">道历：</span>' + tao.getYearInChinese() + '年 ' + tao.getMonthInChinese() + '月 ' + tao.getDayInChinese() + '</div>';
                 
-                // 节日显示行
-                html += '<div class="detail-info-row" style="margin-top:10px; padding:8px 0; border-top:1px dashed #eee; border-bottom:1px dashed #eee; line-height:1.8;"><span class="detail-label">节日：</span>' + festivalHtml + '</div>';
-
+                html += '<div class="detail-info-row" style="margin-top:8px; padding:8px 0; border-top:1px dashed #eee; border-bottom:1px dashed #eee;"><span class="detail-label">节日：</span>' + festivalHtml + '</div>';
                 html += '<div style="margin:10px 0; background:#fff9c4; padding:10px; border-radius:6px; border:1px solid #f0e68c;"><b>禁忌：</b>' + wuStatus + '</div>';
 
                 html += '<div class="yi-ji-box">';
@@ -322,10 +310,9 @@ export default {
                 
                 times.forEach((t, index) => {
                     const type = t.getTianShenType();
-                    const zhiIndex = index; // 子时为0...
+                    const zhiIndex = index;
                     const timeRange = getShichenTimeRange(zhiIndex);
                     
-                    // 判断当前时辰高亮
                     let isNow = false;
                     if (date.toDateString() === now.toDateString()) {
                         let startHour = (zhiIndex * 2 + 23) % 24;
