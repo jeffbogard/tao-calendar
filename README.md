@@ -6,4 +6,7 @@
 
 项目预览：https://dao.jeffnas.dpdns.org/
 
+<img src="wechat_2025-09-23_181605_444.png" alt="Pulpit rock" width="304" height="228">
+
+
 捐赠支持：支付宝19203481801  微信38329470
