@@ -7,6 +7,6 @@
 
 项目在线预览地址：https://dao.jeffnas.dpdns.org/
 
-<img src="wechat_2025-09-23_181605_444.png" alt="Pulpit rock" width="304" height="228">
+<img src="wechat_2025-09-23_181605_444.png" alt="Pulpit rock" width="996" height="996">
 
 捐赠支持：支付宝19203481801  微信38329470
